@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnyDraw Beta Feedback</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      padding: 40px 16px 80px;
+      color: #1a1a2e;
+    }
+
+    .wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Header card */
+    .header-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 24px;
+      padding: 40px 36px;
+      color: white;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-card::before {
+      content: '🎨';
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 80px;
+      opacity: 0.25;
+    }
+    .header-card h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .header-card p {
+      font-size: 15px;
+      opacity: 0.88;
+      line-height: 1.6;
+      max-width: 420px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Section cards */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    /* Icon backgrounds */
+    .icon-blue   { background: #e8f0fe; }
+    .icon-green  { background: #e6f9f0; }
+    .icon-yellow { background: #fff8e1; }
+    .icon-red    { background: #fce8e8; }
+    .icon-purple { background: #f3e8ff; }
+    .icon-pink   { background: #fde8f4; }
+
+    /* Form elements */
+    .field { margin-bottom: 22px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    label .optional {
+      font-weight: 400;
+      color: #999;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e8ecf4;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #1a1a2e;
+      background: #fafbff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      resize: vertical;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
+      background: white;
+    }
+    textarea { min-height: 100px; }
+
+    /* Radio/checkbox groups */
+    .option-group { display: flex; flex-direction: column; gap: 10px; }
+    .option-group.horizontal { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 2px solid #e8ecf4;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: #fafbff;
+    }
+    .option:hover { border-color: #667eea; background: #f0f4ff; }
+    .option input[type="radio"],
+    .option input[type="checkbox"] {
+      width: auto;
+      accent-color: #667eea;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: none;
+    }
+    .option span { font-size: 14px; font-weight: 500; color: #333; }
+
+    /* Star / scale */
+    .scale-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .scale-label { font-size: 12px; color: #888; flex-shrink: 0; }
+    .scale-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .scale-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #e8ecf4;
+      border-radius: 10px;
+      background: #fafbff;
+      font-size: 14px;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scale-btn:hover,
+    .scale-btn.active {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+
+    /* Feature grid */
+    .feature-grid { display: grid; gap: 12px; }
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fafbff;
+      border: 2px solid #e8ecf4;
+      border-radius: 12px;
+    }
+    .feature-name { font-size: 14px; font-weight: 500; color: #333; }
+    .feature-options { display: flex; gap: 6px; }
+    .feat-btn {
+      padding: 5px 10px;
+      border: 2px solid #e8ecf4;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .feat-btn:hover { border-color: #667eea; color: #667eea; }
+    .feat-btn.selected-ok    { background: #22c55e; border-color: #22c55e; color: white; }
+    .feat-btn.selected-meh   { background: #f59e0b; border-color: #f59e0b; color: white; }
+    .feat-btn.selected-broke { background: #ef4444; border-color: #ef4444; color: white; }
+    .feat-btn.selected-skip  { background: #94a3b8; border-color: #94a3b8; color: white; }
+
+    /* Submit */
+    .submit-wrap { text-align: center; margin-top: 32px; }
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 48px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(102,126,234,0.5);
+    }
+    .submit-note { margin-top: 12px; font-size: 13px; color: #aaa; }
+
+    /* Thank you */
+    #thankyou {
+      display: none;
+      text-align: center;
+      padding: 60px 32px;
+    }
+    #thankyou .emoji { font-size: 64px; margin-bottom: 20px; }
+    #thankyou h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    #thankyou p { font-size: 16px; color: #666; }
+
+    /* Hidden inputs for scale values */
+    input.scale-hidden { display: none; }
+
+    @media (max-width: 480px) {
+      .header-card { padding: 28px 24px; }
+      .card { padding: 24px 20px; }
+      .feature-row { grid-template-columns: 1fr; }
+      .feature-options { flex-wrap: wrap; }
+      .header-card::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Header -->
+    <div class="header-card">
+      <div class="badge">🧪 BETA TEST</div>
+      <h1>AnyDraw Feedback</h1>
+      <p>Thanks so much for testing! Takes about 4 minutes. Your honest feedback shapes what we build next — no wrong answers.</p>
+    </div>
+
+    <form id="feedbackForm" action="https://formspree.io/f/REPLACE_ME" method="POST">
+
+      <!-- Section 1: Your Setup -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-blue">📱</div>
+          <div class="section-title">Your Setup</div>
+        </div>
+
+        <div class="field">
+          <label>Your name or email <span class="optional">(so we can follow up)</span></label>
+          <input type="text" name="name_email" placeholder="e.g. Sarah / sarah@email.com" />
+        </div>
+        <div class="field">
+          <label>What device did you test on?</label>
+          <input type="text" name="device" placeholder="e.g. iPad Air 5th gen, iPhone 15 Pro" required />
+        </div>
+        <div class="field">
+          <label>iOS version <span class="optional">(Settings → General → About)</span></label>
+          <input type="text" name="ios_version" placeholder="e.g. iOS 17.4" />
+        </div>
+        <div class="field">
+          <label>Who tested the app?</label>
+          <div class="option-group horizontal">
+            <label class="option"><input type="radio" name="tester_type" value="me" required /> <span>Just me</span></label>
+            <label class="option"><input type="radio" name="tester_type" value="my_kid" /> <span>My kid</span></label>
+            <label class="option"><input type="radio" name="tester_type" value="both" /> <span>Both of us</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>If a child tested — how old? <span class="optional">(optional)</span></label>
+          <input type="text" name="child_age" placeholder="e.g. 6" />
+        </div>
+      </div>
+
+      <!-- Section 2: First Impressions -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-yellow">⚡</div>
+          <div class="section-title">First Impressions</div>
+        </div>
+
+        <div class="field">
+          <label>When you first opened the app, how did it feel?</label>
+          <div class="scale-wrap">
+            <span class="scale-label">😵 Confusing</span>
+            <div class="scale-btns" id="scale_first_impression">
+              <button type="button" class="scale-btn" data-val="1" data-target="first_impression">1</button>
+              <button type="button" class="scale-btn" data-val="2" data-target="first_impression">2</button>
+              <button type="button" class="scale-btn" data-val="3" data-target="first_impression">3</button>
+              <button type="button" class="scale-btn" data-val="4" data-target="first_impression">4</button>
+              <button type="button" class="scale-btn" data-val="5" data-target="first_impression">5</button>
+              <button type="button" class="scale-btn" data-val="6" data-target="first_impression">6</button>
+              <button type="button" class="scale-btn" data-val="7" data-target="first_impression">7</button>
+              <button type="button" class="scale-btn" data-val="8" data-target="first_impression">8</button>
+              <button type="button" class="scale-btn" data-val="9" data-target="first_impression">9</button>
+              <button type="button" class="scale-btn" data-val="10" data-target="first_impression">10</button>
+            </div>
+            <span class="scale-label">😍 Instant love</span>
+          </div>
+          <input class="scale-hidden" type="text" name="first_impression" />
+        </div>
+
+        <div class="field">
+          <label>How polished does it look visually?</label>
+          <div class="scale-wrap">
+            <span class="scale-label">😬 Rough</span>
+            <div class="scale-btns" id="scale_polish">
+              <button type="button" class="scale-btn" data-val="1" data-target="polish">1</button>
+              <button type="button" class="scale-btn" data-val="2" data-target="polish">2</button>
+              <button type="button" class="scale-btn" data-val="3" data-target="polish">3</button>
+              <button type="button" class="scale-btn" data-val="4" data-target="polish">4</button>
+              <button type="button" class="scale-btn" data-val="5" data-target="polish">5</button>
+              <button type="button" class="scale-btn" data-val="6" data-target="polish">6</button>
+              <button type="button" class="scale-btn" data-val="7" data-target="polish">7</button>
+              <button type="button" class="scale-btn" data-val="8" data-target="polish">8</button>
+              <button type="button" class="scale-btn" data-val="9" data-target="polish">9</button>
+              <button type="button" class="scale-btn" data-val="10" data-target="polish">10</button>
+            </div>
+            <span class="scale-label">✨ Super polished</span>
+          </div>
+          <input class="scale-hidden" type="text" name="polish" />
+        </div>
+
+        <div class="field">
+          <label>How easy was it to figure out what to do?</label>
+          <div class="scale-wrap">
+            <span class="scale-label">🤔 No idea</span>
+            <div class="scale-btns" id="scale_ease">
+              <button type="button" class="scale-btn" data-val="1" data-target="ease">1</button>
+              <button type="button" class="scale-btn" data-val="2" data-target="ease">2</button>
+              <button type="button" class="scale-btn" data-val="3" data-target="ease">3</button>
+              <button type="button" class="scale-btn" data-val="4" data-target="ease">4</button>
+              <button type="button" class="scale-btn" data-val="5" data-target="ease">5</button>
+              <button type="button" class="scale-btn" data-val="6" data-target="ease">6</button>
+              <button type="button" class="scale-btn" data-val="7" data-target="ease">7</button>
+              <button type="button" class="scale-btn" data-val="8" data-target="ease">8</button>
+              <button type="button" class="scale-btn" data-val="9" data-target="ease">9</button>
+              <button type="button" class="scale-btn" data-val="10" data-target="ease">10</button>
+            </div>
+            <span class="scale-label">💡 Instantly obvious</span>
+          </div>
+          <input class="scale-hidden" type="text" name="ease" />
+        </div>
+      </div>
+
+      <!-- Section 3: Core Features -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-green">🧩</div>
+          <div class="section-title">Core Features</div>
+        </div>
+        <p style="font-size:13px;color:#888;margin-bottom:16px;">For each feature, tap how it went.</p>
+
+        <div class="feature-grid" id="featureGrid">
+          <div class="feature-row" data-feature="drawing">
+            <span class="feature-name">✏️ Drawing on the canvas</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+          <div class="feature-row" data-feature="colors">
+            <span class="feature-name">🎨 Choosing colors</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+          <div class="feature-row" data-feature="brush">
+            <span class="feature-name">🖌️ Brush size / tool switching</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+          <div class="feature-row" data-feature="undo">
+            <span class="feature-name">↩️ Undo / erase</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+          <div class="feature-row" data-feature="saving">
+            <span class="feature-name">💾 Saving / sharing a drawing</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+          <div class="feature-row" data-feature="sounds">
+            <span class="feature-name">🔊 Sounds / animations</span>
+            <div class="feature-options">
+              <button type="button" class="feat-btn" data-status="ok">✅ Great</button>
+              <button type="button" class="feat-btn" data-status="meh">⚠️ Felt off</button>
+              <button type="button" class="feat-btn" data-status="broke">❌ Broken</button>
+              <button type="button" class="feat-btn" data-status="skip">— Skipped</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden inputs for feature statuses -->
+        <input class="scale-hidden" type="text" name="feature_drawing" id="feature_drawing" />
+        <input class="scale-hidden" type="text" name="feature_colors" id="feature_colors" />
+        <input class="scale-hidden" type="text" name="feature_brush" id="feature_brush" />
+        <input class="scale-hidden" type="text" name="feature_undo" id="feature_undo" />
+        <input class="scale-hidden" type="text" name="feature_saving" id="feature_saving" />
+        <input class="scale-hidden" type="text" name="feature_sounds" id="feature_sounds" />
+      </div>
+
+      <!-- Section 4: Bugs -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-red">🐛</div>
+          <div class="section-title">Bugs & Crashes</div>
+        </div>
+
+        <div class="field">
+          <label>Did the app crash or freeze?</label>
+          <div class="option-group horizontal">
+            <label class="option"><input type="radio" name="crashed" value="yes" /> <span>Yes 💥</span></label>
+            <label class="option"><input type="radio" name="crashed" value="no" /> <span>No 👍</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Describe any bugs you found <span class="optional">(what happened + which screen)</span></label>
+          <textarea name="bugs" placeholder="e.g. When I tapped the eraser, the whole drawing disappeared. It was on the main canvas screen."></textarea>
+        </div>
+      </div>
+
+      <!-- Section 5: Feel & Experience -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-purple">💬</div>
+          <div class="section-title">Feel & Experience</div>
+        </div>
+
+        <div class="field">
+          <label>Was there any moment you felt frustrated or confused?</label>
+          <textarea name="frustrations" placeholder="e.g. I couldn't figure out how to get back to the home screen..."></textarea>
+        </div>
+        <div class="field">
+          <label>Was anything missing that you expected to be there?</label>
+          <textarea name="missing" placeholder="e.g. I expected to be able to fill shapes with color..."></textarea>
+        </div>
+        <div class="field">
+          <label>What did you or the child enjoy most? 🌟</label>
+          <textarea name="enjoyed" placeholder="e.g. My daughter loved the sparkle brush, she couldn't stop using it!"></textarea>
+        </div>
+      </div>
+
+      <!-- Section 6: Big Questions -->
+      <div class="card">
+        <div class="section-label">
+          <div class="section-icon icon-pink">🏆</div>
+          <div class="section-title">The Big Questions</div>
+        </div>
+
+        <div class="field">
+          <label>Would a child ask to use this app again?</label>
+          <div class="option-group">
+            <label class="option"><input type="radio" name="would_return" value="yes" required /> <span>Definitely yes 🙌</span></label>
+            <label class="option"><input type="radio" name="would_return" value="probably" /> <span>Probably</span></label>
+            <label class="option"><input type="radio" name="would_return" value="probably_not" /> <span>Probably not</span></label>
+            <label class="option"><input type="radio" name="would_return" value="no" /> <span>No</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Compared to other kids apps you've used, this feels...</label>
+          <div class="option-group">
+            <label class="option"><input type="radio" name="comparison" value="much_better" /> <span>Much better 🔥</span></label>
+            <label class="option"><input type="radio" name="comparison" value="better" /> <span>Better</span></label>
+            <label class="option"><input type="radio" name="comparison" value="same" /> <span>About the same</span></label>
+            <label class="option"><input type="radio" name="comparison" value="worse" /> <span>Worse</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Overall rating</label>
+          <div class="scale-wrap">
+            <span class="scale-label">💔 Needs work</span>
+            <div class="scale-btns" id="scale_overall">
+              <button type="button" class="scale-btn" data-val="1" data-target="overall">1</button>
+              <button type="button" class="scale-btn" data-val="2" data-target="overall">2</button>
+              <button type="button" class="scale-btn" data-val="3" data-target="overall">3</button>
+              <button type="button" class="scale-btn" data-val="4" data-target="overall">4</button>
+              <button type="button" class="scale-btn" data-val="5" data-target="overall">5</button>
+              <button type="button" class="scale-btn" data-val="6" data-target="overall">6</button>
+              <button type="button" class="scale-btn" data-val="7" data-target="overall">7</button>
+              <button type="button" class="scale-btn" data-val="8" data-target="overall">8</button>
+              <button type="button" class="scale-btn" data-val="9" data-target="overall">9</button>
+              <button type="button" class="scale-btn" data-val="10" data-target="overall">10</button>
+            </div>
+            <span class="scale-label">🚀 Ship it!</span>
+          </div>
+          <input class="scale-hidden" type="text" name="overall" />
+        </div>
+
+        <div class="field">
+          <label>Anything else we should know? <span class="optional">(optional)</span></label>
+          <textarea name="anything_else" placeholder="Any final thoughts, ideas, suggestions — fire away!"></textarea>
+        </div>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" class="submit-btn">Submit Feedback 🚀</button>
+        <p class="submit-note">Takes a second to send. Thanks for your time — it means a lot! 🙏</p>
+      </div>
+
+    </form>
+
+    <!-- Thank you screen -->
+    <div id="thankyou" class="card">
+      <div class="emoji">🎨</div>
+      <h2>You're a legend!</h2>
+      <p>Your feedback has been sent. It'll directly shape what we build next in AnyDraw. Genuinely, thank you!</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Scale buttons
+    document.querySelectorAll('.scale-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
+        document.querySelectorAll(`.scale-btn[data-target="${target}"]`).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelector(`input[name="${target}"]`).value = btn.dataset.val;
+      });
+    });
+
+    // Feature buttons
+    document.querySelectorAll('.feature-row').forEach(row => {
+      const feature = row.dataset.feature;
+      row.querySelectorAll('.feat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          row.querySelectorAll('.feat-btn').forEach(b => {
+            b.classList.remove('selected-ok','selected-meh','selected-broke','selected-skip');
+          });
+          const status = btn.dataset.status;
+          btn.classList.add(`selected-${status}`);
+          document.getElementById(`feature_${feature}`).value = status;
+        });
+      });
+    });
+
+    // Form submit → show thank you
+    const form = document.getElementById('feedbackForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          form.style.display = 'none';
+          document.getElementById('thankyou').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          alert('Something went wrong. Try again?');
+        }
+      } catch {
+        alert('Network error. Check your connection and try again.');
+      }
+    });
+  </script>
+</body>
+</html>
