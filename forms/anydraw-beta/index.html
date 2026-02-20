@@ -291,7 +291,7 @@
       <p>Thanks so much for testing! Takes about 4 minutes. Your honest feedback shapes what we build next — no wrong answers.</p>
     </div>
 
-    <form id="feedbackForm" action="https://formspree.io/f/REPLACE_ME" method="POST">
+    <form id="feedbackForm">
 
       <!-- Section 1: Your Setup -->
       <div class="card">
@@ -608,21 +608,35 @@
       });
     });
 
-    // Form submit → show thank you
+    // Form submit → POST JSON to Vercel API → Discord
+    const API_URL = 'https://anydraw-feedback-api.vercel.app/api/submit';
     const form = document.getElementById('feedbackForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = new FormData(form);
+      const fd = new FormData(form);
+      const data = {};
+      fd.forEach((v, k) => { data[k] = v; });
+      const submitBtn = form.querySelector('.submit-btn');
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
       try {
-        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        });
         if (res.ok) {
           form.style.display = 'none';
           document.getElementById('thankyou').style.display = 'block';
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
+          submitBtn.textContent = 'Submit Feedback 🚀';
+          submitBtn.disabled = false;
           alert('Something went wrong. Try again?');
         }
       } catch {
+        submitBtn.textContent = 'Submit Feedback 🚀';
+        submitBtn.disabled = false;
         alert('Network error. Check your connection and try again.');
       }
     });
